@@ -20,6 +20,17 @@ const generateToken = user => {
 }
 
 module.exports = {
+    Query: {
+        getUsers: async () => {
+            try {
+                const users = await User.find();
+                return users;
+            } catch (err) {
+                throw new Error('Unable to get users', err);
+            }
+        }
+    },
+
     Mutation: {
         async register(
             _, 
