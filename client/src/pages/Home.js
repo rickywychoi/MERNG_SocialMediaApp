@@ -3,8 +3,8 @@ import { useQuery } from '@apollo/client'
 import { Grid, Transition } from 'semantic-ui-react'
 
 import { AuthContext } from '../context/auth'
-import PostCard from '../containers/PostCard'
-import PostForm from '../containers/PostForm'
+import PostCard from '../containers/Post/PostCard'
+import PostForm from '../containers/Post/PostForm'
 import { FETCH_POSTS_QUERY } from '../util/graphql'
 
 function Home () {

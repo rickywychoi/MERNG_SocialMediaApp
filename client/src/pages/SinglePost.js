@@ -7,10 +7,12 @@ import moment from 'moment'
 import { AuthContext } from '../context/auth'
 import LikeButton from '../components/LikeButton'
 import DeleteButton from '../components/DeleteButton'
+import CommentCard from '../containers/Comment/CommentCard'
+import CommentForm from '../containers/Comment/CommentForm'
 
 function SinglePost (props) {
-  const { user } = useContext(AuthContext)
   const postId = props.match.params.postId
+  const { user } = useContext(AuthContext)
 
   const { data } = useQuery(FETCH_POST_QUERY, {
     variables: {
@@ -75,6 +77,10 @@ function SinglePost (props) {
                 <DeleteButton postId={postId} callback={deletePostCallback} />
               </Card.Content>
             </Card>
+            {user && <CommentForm postId={postId} />}
+            {comments.map(comment => (
+              <CommentCard comment={comment} user={user} postId={postId} />
+            ))}
           </Grid.Column>
         </Grid.Row>
       </Grid>
