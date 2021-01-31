@@ -3,9 +3,9 @@ import { Card, Icon, Label, Image, Button } from 'semantic-ui-react'
 import { Link } from 'react-router-dom'
 import moment from 'moment'
 
-const PostCard = ({
+function PostCard({
   post: { id, body, createdAt, username, likeCount, commentCount, likes }
-}) => {
+}) {
   const likePost = () => {
     console.log("LIKE POST")
   }
