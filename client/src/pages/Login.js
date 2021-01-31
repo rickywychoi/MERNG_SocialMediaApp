@@ -1,20 +1,25 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { Button, Form } from 'semantic-ui-react'
 import { gql, useMutation } from '@apollo/client'
 
+
+import { AuthContext } from '../context/auth'
 import { useForm } from '../util/hooks'
 
-function Login(props) {
+function Login (props) {
+  const context = useContext(AuthContext)
   const [errors, setErrors] = useState({})
 
   const { onChange, onSubmit, values } = useForm(loginUserCallback, {
     username: '',
     password: ''
-  });
+  })
 
   const [loginUser, { loading }] = useMutation(LOGIN_USER, {
-    update (_, __) {
-      props.history.push('/');
+    update (_, { data: { login: userData } }) {
+      console.log(userData)
+      context.login(userData)
+      props.history.push('/')
     },
     onError (err) {
       setErrors(err.graphQLErrors[0].extensions.exception.errors)
@@ -23,7 +28,7 @@ function Login(props) {
   })
 
   // functions are hoisted initially in JavaScript: "First citizens"
-  function loginUserCallback() {
+  function loginUserCallback () {
     loginUser()
   }
 
@@ -39,7 +44,7 @@ function Login(props) {
           value={values.username}
           error={errors.username ? true : false}
           onChange={onChange}
-          />
+        />
         <Form.Input
           label='Password'
           placeholder='Password'
@@ -48,7 +53,7 @@ function Login(props) {
           value={values.password}
           error={errors.password ? true : false}
           onChange={onChange}
-          />
+        />
         <Button type='submit' primary>
           Login
         </Button>
@@ -63,20 +68,13 @@ function Login(props) {
           </ul>
         </div>
       )}
-
     </div>
   )
 }
 
 const LOGIN_USER = gql`
-  mutation login(
-    $username: String!
-    $password: String!
-  ) {
-    login(
-      username: $username
-      password: $password
-    ) {
+  mutation login($username: String!, $password: String!) {
+    login(username: $username, password: $password) {
       id
       email
       token

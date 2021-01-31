@@ -1,10 +1,12 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { Button, Form } from 'semantic-ui-react'
 import { gql, useMutation } from '@apollo/client'
 
-import { useForm } from '../util/hooks';
+import { AuthContext } from '../context/auth'
+import { useForm } from '../util/hooks'
 
-function Register(props) {
+function Register (props) {
+  const context = useContext(AuthContext)
   const [errors, setErrors] = useState({})
 
   const { onChange, onSubmit, values } = useForm(registerUser, {
@@ -12,11 +14,13 @@ function Register(props) {
     password: '',
     confirmPassword: '',
     email: ''
-  });
-  
+  })
+
   const [addUser, { loading }] = useMutation(REGISTER_USER, {
-    update (_, __) {
-      props.history.push('/');
+    update (_, { data: { register: userData } }) {
+      console.log(userData)
+      context.login(userData)
+      props.history.push('/')
     },
     onError (err) {
       setErrors(err.graphQLErrors[0].extensions.exception.errors)
@@ -25,8 +29,8 @@ function Register(props) {
   })
 
   // functions are hoisted initially in JavaScript: "First citizens"
-  function registerUser() {
-    addUser();
+  function registerUser () {
+    addUser()
   }
 
   return (
@@ -41,7 +45,7 @@ function Register(props) {
           value={values.username}
           error={errors.username ? true : false}
           onChange={onChange}
-          />
+        />
         <Form.Input
           label='Email'
           placeholder='Email'
@@ -50,7 +54,7 @@ function Register(props) {
           value={values.email}
           error={errors.email ? true : false}
           onChange={onChange}
-          />
+        />
         <Form.Input
           label='Password'
           placeholder='Password'
@@ -59,7 +63,7 @@ function Register(props) {
           value={values.password}
           error={errors.password ? true : false}
           onChange={onChange}
-          />
+        />
         <Form.Input
           label='Confirm Password'
           placeholder='Confirm Password'
@@ -68,7 +72,7 @@ function Register(props) {
           value={values.confirmPassword}
           error={errors.confirmPassword ? true : false}
           onChange={onChange}
-          />
+        />
         <Button type='submit' primary>
           Register
         </Button>
@@ -83,7 +87,6 @@ function Register(props) {
           </ul>
         </div>
       )}
-
     </div>
   )
 }
