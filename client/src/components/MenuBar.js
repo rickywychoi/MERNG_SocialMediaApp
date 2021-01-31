@@ -25,7 +25,7 @@ const MenuBar = () => {
             name='login'
             active={activeItem === 'login'}
             onClick={handleItemClick}
-            as={Link}
+            as={Link} 
             to='/login'
           />
           <Menu.Item
